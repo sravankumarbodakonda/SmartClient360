@@ -54,8 +54,18 @@ html,
   gap: 0.5rem;
 }
 
-.brand-icon {
-  font-size: 1.8rem;
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-text {
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #43cea2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-link {
@@ -896,6 +906,17 @@ html,
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.footer-title .logo-container {
+  color: white;
+}
+
+.footer-title .logo-text {
+  background: linear-gradient(135deg, #43cea2 0%, #81e6d9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .footer-description {

@@ -5,6 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./App.css";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
+import Logo from "./components/Logo";
 
 const Navbar = () => {
   const location = useLocation();
@@ -34,9 +35,8 @@ const Navbar = () => {
   return (
     <nav className={`navbar navbar-expand-lg ${isScrolled ? "navbar-scrolled" : ""}`}>
       <div className="container">
-        <Link className="navbar-brand" to="/">
-          <span className="brand-icon">🚀</span>
-          SmartClient360
+        <Link className="navbar-brand" to="/" style={{ textDecoration: "none" }}>
+          <Logo size="small" showText={true} />
         </Link>
         <button
           className="navbar-toggler"
@@ -124,9 +124,9 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3 className="footer-title">
-              <span className="brand-icon">🚀</span> SmartClient360
-            </h3>
+            <div className="footer-title">
+              <Logo size="small" showText={true} />
+            </div>
             <p className="footer-description">
               Transforming businesses with cutting-edge technology solutions.
             </p>

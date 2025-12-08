@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartClient360 Tile</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #43cea2 100%);
+        }
+        .tile-container {
+            width: 512px;
+            height: 512px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        .logo-wrapper {
+            margin-bottom: 30px;
+        }
+        .company-name {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #43cea2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin: 0;
+        }
+        .tagline {
+            font-size: 20px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tile-container">
+        <div class="logo-wrapper">
+            <img src="logo.svg" alt="SmartClient360 Logo" width="200" height="200">
+        </div>
+        <h1 class="company-name">SmartClient360</h1>
+        <p class="tagline">Transform Your Business</p>
+    </div>
+</body>
+</html>
+
