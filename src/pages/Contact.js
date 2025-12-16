@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -16,6 +18,7 @@ const Contact = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,29 +68,134 @@ const Contact = () => {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
-    // Simulate API call
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // In a real application, you would send this data to your backend
-      console.log("Form submitted:", formData);
-      
-      setSubmitStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        subject: "",
-        message: "",
-      });
-      
-      // Reset status after 5 seconds
+    // EmailJS configuration
+    const serviceID = process.env.REACT_APP_EMAILJS_SERVICE_ID || "YOUR_SERVICE_ID";
+    const templateID = process.env.REACT_APP_EMAILJS_TEMPLATE_ID || "YOUR_TEMPLATE_ID";
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY";
+
+    // Debug: Log configuration (remove in production)
+    console.log("EmailJS Configuration:", {
+      serviceID: serviceID ? "✓ Set" : "✗ Missing",
+      templateID: templateID ? "✓ Set" : "✗ Missing",
+      publicKey: publicKey ? "✓ Set" : "✗ Missing",
+    });
+
+    // Check if EmailJS is properly configured
+    const isNotConfigured = 
+      serviceID === "YOUR_SERVICE_ID" || 
+      serviceID === "your_service_id_here" ||
+      templateID === "YOUR_TEMPLATE_ID" || 
+      templateID === "your_template_id_here" ||
+      publicKey === "YOUR_PUBLIC_KEY" || 
+      publicKey === "your_public_key_here" ||
+      !serviceID || 
+      !templateID || 
+      !publicKey;
+
+    if (isNotConfigured) {
+      console.error("❌ EmailJS not configured!");
+      console.error("Please update your .env file with actual EmailJS credentials:");
+      console.error("REACT_APP_EMAILJS_SERVICE_ID=service_xxxxxxx");
+      console.error("REACT_APP_EMAILJS_TEMPLATE_ID=template_xxxxxxx");
+      console.error("REACT_APP_EMAILJS_PUBLIC_KEY=xxxxxxxxxxxxxxxx");
+      console.error("\n📖 See EMAILJS_SETUP.md for detailed instructions");
+      setErrorMessage("EmailJS is not configured. Please update your .env file with actual EmailJS credentials. See EMAILJS_SETUP.md for instructions.");
+      setSubmitStatus("error");
+      setIsSubmitting(false);
       setTimeout(() => {
         setSubmitStatus(null);
-      }, 5000);
+        setErrorMessage("");
+      }, 8000);
+      return;
+    }
+
+    try {
+      // Prepare template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone || "Not provided",
+        company: formData.company || "Not provided",
+        subject: formData.subject || "No subject",
+        message: formData.message,
+        to_name: "SmartClient360 Team",
+        reply_to: formData.email, // For reply-to functionality
+      };
+
+      console.log("Sending email with params:", templateParams);
+
+      // Send email using EmailJS
+      // Method 1: Using the newer API format (recommended)
+      const response = await emailjs.send(
+        serviceID,
+        templateID,
+        templateParams,
+        publicKey
+      );
+
+      console.log("EmailJS Response:", response);
+
+      if (response.status === 200 || response.text === "OK") {
+        console.log("✅ Email sent successfully!");
+        setSubmitStatus("success");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          subject: "",
+          message: "",
+        });
+        
+        // Reset status after 5 seconds
+        setTimeout(() => {
+          setSubmitStatus(null);
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        throw new Error(`Unexpected response: ${response.status}`);
+      }
     } catch (error) {
+      console.error("❌ EmailJS Error Details:", {
+        error: error,
+        message: error.text || error.message,
+        status: error.status,
+        serviceID: serviceID,
+        templateID: templateID,
+      });
+
+      // Provide user-friendly error messages
+      let userErrorMessage = "Failed to send email. ";
+      
+      if (error.text) {
+        if (error.text.includes("Invalid template ID")) {
+          userErrorMessage += "Template ID is invalid. Please check your EmailJS template configuration.";
+        } else if (error.text.includes("Invalid service ID")) {
+          userErrorMessage += "Service ID is invalid. Please check your EmailJS service configuration.";
+        } else if (error.text.includes("Invalid public key")) {
+          userErrorMessage += "Public key is invalid. Please check your EmailJS API key.";
+        } else if (error.text.includes("Forbidden")) {
+          userErrorMessage += "Access denied. Please check your EmailJS API key and service permissions.";
+        } else {
+          userErrorMessage += error.text;
+        }
+      } else if (error.message) {
+        userErrorMessage += error.message;
+      } else {
+        userErrorMessage += "Please check your EmailJS configuration and try again.";
+      }
+
+      setErrorMessage(userErrorMessage);
       setSubmitStatus("error");
+      
+      // Show error in console for debugging
+      console.error("Error Message:", userErrorMessage);
+      
+      // Reset error status after 8 seconds (longer for error messages)
+      setTimeout(() => {
+        setSubmitStatus(null);
+        setErrorMessage("");
+      }, 8000);
     } finally {
       setIsSubmitting(false);
     }
@@ -138,14 +246,21 @@ const Contact = () => {
         <div className="contact-content">
           {/* Contact Information Cards */}
           <div className="contact-info-section">
-            <div className="contact-info-grid">
-              {contactInfo.map((info, index) => (
-                <div
-                  key={index}
-                  className="contact-info-card"
-                  data-aos="fade-up"
-                  data-aos-delay={index * 100}
-                >
+          <div className="contact-info-grid">
+            {contactInfo.map((info, index) => (
+              <motion.div
+                key={index}
+                className="contact-info-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ 
+                  y: -10, 
+                  scale: 1.05,
+                  transition: { duration: 0.3 }
+                }}
+              >
                   <div className="contact-info-icon">{info.icon}</div>
                   <h3 className="contact-info-title">{info.title}</h3>
                   <a
@@ -156,22 +271,43 @@ const Contact = () => {
                   >
                     {info.content}
                   </a>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* Contact Form */}
           <div className="contact-form-section">
-            <div className="contact-form-container" data-aos="fade-up">
-              <h2 className="form-title">Send Us a Message</h2>
-              <form onSubmit={handleSubmit} className="contact-form">
+            <motion.div 
+              className="contact-form-container"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <motion.h2 
+                className="form-title"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+              >
+                Send Us a Message
+              </motion.h2>
+              <motion.form 
+                onSubmit={handleSubmit} 
+                className="contact-form"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="name" className="form-label">
                       Full Name <span className="required">*</span>
                     </label>
-                    <input
+                    <motion.input
                       type="text"
                       id="name"
                       name="name"
@@ -179,6 +315,7 @@ const Contact = () => {
                       onChange={handleChange}
                       className={`form-input ${errors.name ? "error" : ""}`}
                       placeholder="John Doe"
+                      whileFocus={{ scale: 1.02, borderColor: "#185a9d" }}
                     />
                     {errors.name && (
                       <span className="error-message">{errors.name}</span>
@@ -277,14 +414,23 @@ const Contact = () => {
 
                 {submitStatus === "error" && (
                   <div className="error-message-box">
-                    <i className="bi bi-exclamation-circle"></i> Something went wrong. Please try again.
+                    <i className="bi bi-exclamation-circle"></i> 
+                    <div>
+                      <strong>Error:</strong> {errorMessage || "Something went wrong. Please try again."}
+                      <br />
+                      <small style={{ marginTop: "0.5rem", display: "block" }}>
+                        Check the browser console for more details.
+                      </small>
+                    </div>
                   </div>
                 )}
 
-                <button
+                <motion.button
                   type="submit"
                   className="submit-button"
                   disabled={isSubmitting}
+                  whileHover={!isSubmitting ? { scale: 1.05, y: -2 } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.95 } : {}}
                 >
                   {isSubmitting ? (
                     <>
@@ -295,9 +441,9 @@ const Contact = () => {
                       <i className="bi bi-send"></i> Send Message
                     </>
                   )}
-                </button>
-              </form>
-            </div>
+                </motion.button>
+              </motion.form>
+            </motion.div>
           </div>
         </div>
       </div>

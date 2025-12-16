@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f7fa;">
+    <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f7fa; padding: 20px 0;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
+                <!-- Main Container -->
+                <table role="presentation" style="width: 100%; max-width: 600px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #43cea2 100%); padding: 40px 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px;">
+                                🎉 New Contact Form Submission
+                            </h1>
+                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">
+                                SmartClient360 Contact Form
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 25px 0; color: #333333; font-size: 16px; line-height: 1.6;">
+                                Hello <strong>{{to_name}}</strong>,
+                            </p>
+                            
+                            <p style="margin: 0 0 30px 0; color: #666666; font-size: 16px; line-height: 1.6;">
+                                You have received a new message through the SmartClient360 contact form. Here are the details:
+                            </p>
+
+                            <!-- Information Card -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f9fafe; border-radius: 8px; padding: 25px; margin-bottom: 30px;">
+                                <tr>
+                                    <td>
+                                        <!-- Name -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Name</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <span style="color: #333333; font-size: 16px; font-weight: 600;">{{from_name}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Email -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Email Address</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <a href="mailto:{{from_email}}" style="color: #43cea2; font-size: 16px; text-decoration: none; font-weight: 600;">{{from_email}}</a>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Phone -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Phone Number</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <span style="color: #333333; font-size: 16px;">{{phone}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Company -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Company</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <span style="color: #333333; font-size: 16px;">{{company}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Subject -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Subject</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-bottom: 15px;">
+                                                    <span style="color: #333333; font-size: 16px; font-weight: 600;">{{subject}}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <!-- Message -->
+                                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding-bottom: 8px;">
+                                                    <strong style="color: #185a9d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Message</strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div style="background-color: #ffffff; border-left: 4px solid #43cea2; padding: 20px; border-radius: 4px; margin-top: 10px;">
+                                                        <p style="margin: 0; color: #333333; font-size: 15px; line-height: 1.8; white-space: pre-wrap;">{{message}}</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Action Button -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="mailto:{{from_email}}?subject=Re: {{subject}}" style="display: inline-block; background: linear-gradient(135deg, #43cea2, #185a9d); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 50px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(67, 206, 162, 0.3);">
+                                            Reply to {{from_name}}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Divider -->
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                                <tr>
+                                    <td style="border-top: 1px solid #e0e0e0;"></td>
+                                </tr>
+                            </table>
+
+                            <!-- Footer -->
+                            <p style="margin: 0; color: #999999; font-size: 13px; line-height: 1.6; text-align: center;">
+                                This email was automatically generated from the SmartClient360 contact form.<br>
+                                <strong>Reply-To:</strong> {{reply_to}}
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer Bar -->
+                    <tr>
+                        <td style="background-color: #1a1a2e; padding: 20px 30px; text-align: center;">
+                            <p style="margin: 0; color: #b0b0b0; font-size: 12px;">
+                                © 2024 SmartClient360 LLC. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Spacer -->
+                <table role="presentation" style="width: 100%; max-width: 600px; margin-top: 20px;">
+                    <tr>
+                        <td style="text-align: center; padding: 20px;">
+                            <p style="margin: 0; color: #999999; font-size: 12px;">
+                                This is an automated message. Please do not reply to this email directly.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

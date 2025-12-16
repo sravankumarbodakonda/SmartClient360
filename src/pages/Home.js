@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import DemoModal from "../DemoModal";
@@ -10,6 +11,19 @@ AOS.init({
 
 const Home = () => {
   const [selectedDemo, setSelectedDemo] = useState(null);
+  const heroRef = useRef(null);
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  // Particle animation
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 3 + Math.random() * 2,
+  }));
 
   // Sample projects data
   const projects = [
@@ -159,48 +173,175 @@ const Home = () => {
     },
   ];
 
+  const cardVariants = {
+    initial: { y: 50, opacity: 0 },
+    animate: (i) => ({
+      y: 0,
+      opacity: 1,
+      transition: {
+        delay: i * 0.2,
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }),
+    hover: {
+      y: -10,
+      scale: 1.05,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const floatingCardVariants = {
+    animate: {
+      y: [0, -20, 0],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
     <div>
-      {/* Modern Hero Section */}
-      <section className="hero-section">
+      {/* Modern Hero Section with Parallax */}
+      <motion.section 
+        ref={heroRef}
+        className="hero-section"
+        style={{ y, opacity }}
+      >
+        {/* Animated Particles Background */}
+        <div className="particles-container">
+          {particles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="particle"
+              initial={{ 
+                x: `${particle.x}%`, 
+                y: `${particle.y}%`,
+                opacity: 0 
+              }}
+              animate={{
+                y: [`${particle.y}%`, `${particle.y - 20}%`, `${particle.y}%`],
+                opacity: [0, 0.6, 0],
+                scale: [0, 1, 0]
+              }}
+              transition={{
+                duration: particle.duration,
+                repeat: Infinity,
+                delay: particle.delay,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
+
         <div className="hero-content">
-          <div className="hero-text" data-aos="fade-up">
-            <h1 className="hero-title">
+          <motion.div 
+            className="hero-text" 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h1 
+              className="hero-title"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
               Transform Your Business with
-              <span className="gradient-text"> SmartClient360</span>
-            </h1>
-            <p className="hero-subtitle">
+              <motion.span 
+                className="gradient-text"
+                animate={{
+                  backgroundPosition: ["0%", "100%", "0%"],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              >
+                {" "}SmartClient360
+              </motion.span>
+            </motion.h1>
+            <motion.p 
+              className="hero-subtitle"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
               Cutting-edge technology solutions powered by AI, Cloud, and Modern Web Technologies
-            </p>
-            <div className="hero-buttons">
-              <a href="#projects" className="btn-primary">
+            </motion.p>
+            <motion.div 
+              className="hero-buttons"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+            >
+              <motion.a 
+                href="#projects" 
+                className="btn-primary"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 View Our Work
-              </a>
-              <a href="/contact" className="btn-secondary">
+              </motion.a>
+              <motion.a 
+                href="/contact" 
+                className="btn-secondary"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 Get Started
-              </a>
-            </div>
-          </div>
-          <div className="hero-visual" data-aos="fade-left">
-            <div className="floating-card card-1">
+              </motion.a>
+            </motion.div>
+          </motion.div>
+          <motion.div 
+            className="hero-visual"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            <motion.div 
+              className="floating-card card-1"
+              variants={floatingCardVariants}
+              animate="animate"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+            >
               <div className="card-icon">🚀</div>
               <div className="card-text">Innovation</div>
-            </div>
-            <div className="floating-card card-2">
+            </motion.div>
+            <motion.div 
+              className="floating-card card-2"
+              variants={floatingCardVariants}
+              animate="animate"
+              style={{ animationDelay: "1s" }}
+              whileHover={{ scale: 1.1, rotate: -5 }}
+            >
               <div className="card-icon">💡</div>
               <div className="card-text">Solutions</div>
-            </div>
-            <div className="floating-card card-3">
+            </motion.div>
+            <motion.div 
+              className="floating-card card-3"
+              variants={floatingCardVariants}
+              animate="animate"
+              style={{ animationDelay: "2s" }}
+              whileHover={{ scale: 1.1, rotate: 5 }}
+            >
               <div className="card-icon">⭐</div>
               <div className="card-text">Excellence</div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-        <div className="scroll-indicator">
+        <motion.div 
+          className="scroll-indicator"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
           <span>Scroll to explore</span>
           <div className="scroll-arrow">↓</div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
       {/* Modern Features Section */}
       <section id="features" className="features-section">
@@ -213,16 +354,33 @@ const Home = () => {
           </div>
           <div className="features-grid">
             {features.map((feature, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="feature-card"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
+                variants={cardVariants}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: "-100px" }}
+                custom={index}
+                whileHover="hover"
               >
-                <div className="feature-icon">{feature.icon}</div>
+                <motion.div 
+                  className="feature-icon"
+                  animate={{ 
+                    rotate: [0, 10, -10, 0],
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.2
+                  }}
+                >
+                  {feature.icon}
+                </motion.div>
                 <h3 className="feature-title">{feature.title}</h3>
                 <p className="feature-description">{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -239,11 +397,14 @@ const Home = () => {
           </div>
           <div className="projects-grid">
             {projects.map((project, index) => (
-              <div
+              <motion.div
                 key={project.id}
                 className="project-card"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                whileHover={{ y: -10, scale: 1.02 }}
               >
                 <div className="project-image-container">
                   <img
@@ -281,7 +442,7 @@ const Home = () => {
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -298,11 +459,15 @@ const Home = () => {
           </div>
           <div className="demos-grid">
             {demos.map((demo, index) => (
-              <div
+              <motion.div
                 key={demo.id}
                 className="demo-card"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.15, duration: 0.5 }}
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedDemo(demo)}
               >
                 <div className="demo-image-container">
@@ -321,9 +486,15 @@ const Home = () => {
                 <div className="demo-content">
                   <h3 className="demo-title">{demo.title}</h3>
                   <p className="demo-description">{demo.description}</p>
-                  <button className="demo-button">View Demo</button>
+                  <motion.button 
+                    className="demo-button"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    View Demo
+                  </motion.button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -343,11 +514,14 @@ const Home = () => {
           </div>
           <div className="presentations-grid">
             {presentations.map((presentation, index) => (
-              <div
+              <motion.div
                 key={presentation.id}
                 className="presentation-card"
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+                whileHover={{ y: -10, rotateY: 5 }}
               >
                 <div className="presentation-thumbnail">
                   <img
@@ -370,7 +544,7 @@ const Home = () => {
                     <i className="bi bi-download"></i> Download PDF
                   </a>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -384,14 +558,30 @@ const Home = () => {
             <p className="cta-subtitle">
               Let's discuss how SmartClient360 can help you achieve your goals
             </p>
-            <div className="cta-buttons">
-              <a href="/contact" className="btn-primary btn-large">
+            <motion.div 
+              className="cta-buttons"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+            >
+              <motion.a 
+                href="/contact" 
+                className="btn-primary btn-large"
+                whileHover={{ scale: 1.1, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 Contact Us Today
-              </a>
-              <a href="#projects" className="btn-secondary btn-large">
+              </motion.a>
+              <motion.a 
+                href="#projects" 
+                className="btn-secondary btn-large"
+                whileHover={{ scale: 1.1, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 View Portfolio
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
           </div>
         </div>
       </section>

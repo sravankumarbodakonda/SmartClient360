@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const Logo = ({ size = "medium", showText = true, className = "" }) => {
   const sizes = {
@@ -9,14 +10,53 @@ const Logo = ({ size = "medium", showText = true, className = "" }) => {
 
   const { width, height, fontSize } = sizes[size] || sizes.medium;
 
+  const logoVariants = {
+    initial: { scale: 0, rotate: -180 },
+    animate: { 
+      scale: 1, 
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 15
+      }
+    },
+    hover: {
+      rotate: 360,
+      scale: 1.1,
+      transition: {
+        rotate: { duration: 1, ease: "easeInOut" },
+        scale: { duration: 0.3 }
+      }
+    }
+  };
+
+  const orbitVariants = {
+    rotate: {
+      rotate: 360,
+      transition: {
+        duration: 20,
+        repeat: Infinity,
+        ease: "linear"
+      }
+    }
+  };
+
   return (
-    <div className={`logo-container ${className}`} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-      <svg
+    <motion.div 
+      className={`logo-container ${className}`} 
+      style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}
+      initial="initial"
+      animate="animate"
+      whileHover="hover"
+    >
+      <motion.svg
         width={width}
         height={height}
         viewBox="0 0 200 200"
         xmlns="http://www.w3.org/2000/svg"
         style={{ flexShrink: 0 }}
+        variants={logoVariants}
       >
         <defs>
           <linearGradient id="logoGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -52,19 +92,25 @@ const Logo = ({ size = "medium", showText = true, className = "" }) => {
         <ellipse cx="100" cy="170" rx="8" ry="12" fill="#43cea2" opacity="0.7"/>
         <ellipse cx="100" cy="175" rx="5" ry="8" fill="#81e6d9" opacity="0.8"/>
         
-        {/* Orbit Paths (360 concept) */}
-        <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(0 100 100)"/>
-        <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(60 100 100)"/>
-        <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(120 100 100)"/>
+        {/* Orbit Paths (360 concept) - Animated */}
+        <motion.g
+          variants={orbitVariants}
+          animate="rotate"
+          style={{ transformOrigin: "100px 100px" }}
+        >
+          <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(0 100 100)"/>
+          <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(60 100 100)"/>
+          <ellipse cx="100" cy="100" rx="60" ry="20" fill="none" stroke="url(#logoGrad2)" strokeWidth="2" opacity="0.4" transform="rotate(120 100 100)"/>
+        </motion.g>
         
         {/* Stars/Points */}
         <circle cx="100" cy="40" r="3" fill="#43cea2"/>
         <circle cx="160" cy="100" r="3" fill="#667eea"/>
         <circle cx="100" cy="160" r="3" fill="#764ba2"/>
         <circle cx="40" cy="100" r="3" fill="#43cea2"/>
-      </svg>
+      </motion.svg>
       {showText && (
-        <span
+        <motion.span
           className="logo-text"
           style={{
             fontSize,
@@ -74,11 +120,14 @@ const Logo = ({ size = "medium", showText = true, className = "" }) => {
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
           }}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
         >
           SmartClient360
-        </span>
+        </motion.span>
       )}
-    </div>
+    </motion.div>
   );
 };
 
